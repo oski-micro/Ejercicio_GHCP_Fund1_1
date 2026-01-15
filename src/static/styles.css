@@ -5,26 +5,6 @@
   font-family: Arial, sans-serif;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  } 
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
@@ -81,72 +61,17 @@ section h3 {
   margin-bottom: 15px;
   padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.activity-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  border-color: #0066cc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }
 
 .activity-card h4 {
   margin-bottom: 10px;
   color: #0066cc;
-  font-size: 18px;
-  font-weight: 600;
 }
 
 .activity-card p {
   margin-bottom: 8px;
-  color: #555;
-}
-
-.participants-section {
-  margin-top: 15px;
-  padding: 12px;
-  border-top: 2px solid #e0e0e0;
-  background-color: rgba(26, 35, 126, 0.03);
-  border-radius: 6px;
-}
-
-.participants-section strong {
-  display: block;
-  margin-bottom: 10px;
-  color: #1a237e;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.participants-list {
-  list-style: none;
-  margin-left: 0;
-  padding-left: 0;
-  font-size: 14px;
-}
-
-.participants-list li {
-  margin-bottom: 6px;
-  color: #555;
-  padding-left: 20px;
-  position: relative;
-}
-
-.participants-list li:before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: #4caf50;
-  font-weight: bold;
-}
-
-.participants-list em {
-  color: #999;
-  font-style: italic;
 }
 
 .form-group {
@@ -168,23 +93,6 @@ section h3 {
   font-size: 16px;
 }
 
-.availability {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.availability.available {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.availability.full {
-  background-color: #ffebee;
-  color: #c62828;
-}
-
 button {
   background-color: #1a237e;
   color: white;
@@ -193,25 +101,17 @@ button {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s;
 }
 
-button:hover:not(:disabled) {
+button:hover {
   background-color: #3949ab;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .message {
   margin-top: 20px;
-  padding: 15px;
+  padding: 10px;
   border-radius: 4px;
-  animation: fadeIn 0.3s ease;
 }
 
 .success {
