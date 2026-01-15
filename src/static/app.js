@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
+      activitiesList.innerHTML = '<p style="color: #999; font-style: italic; text-align: center;">Loading activities...</p>';
       const response = await fetch("/activities");
       const activities = await response.json();
 
@@ -14,20 +15,25 @@ document.addEventListener("DOMContentLoaded", () => {
       activitiesList.innerHTML = "";
 
       // Populate activities list
-      Object.entries(activities).forEach(([name, details]) => {
+      Object.entries(activities).forEach(([name, details], index) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
+        activityCard.style.animationDelay = `${index * 0.1}s`;
 
         const spotsLeft = details.max_participants - details.participants.length;
+        const isFull = spotsLeft === 0;
         const participantsList = details.participants.length > 0
           ? details.participants.map(p => `<li>${p}</li>`).join("")
           : "<li><em>No participants yet</em></li>";
+
+        const availabilityClass = isFull ? "full" : "available";
+        const availabilityText = isFull ? "Activity Full" : `${spotsLeft} spots left`;
 
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <p><strong>Availability:</strong> <span class="availability ${availabilityClass}">${availabilityText}</span></p>
           <div class="participants-section">
             <strong>Participants (${details.participants.length}/${details.max_participants}):</strong>
             <ul class="participants-list">
@@ -41,11 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add option to select dropdown
         const option = document.createElement("option");
         option.value = name;
-        option.textContent = name;
+        option.textContent = `${name}${isFull ? " (FULL)" : ""}`;
+        option.disabled = isFull;
         activitySelect.appendChild(option);
       });
     } catch (error) {
-      activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
+      activitiesList.innerHTML = '<p style="color: #c62828; text-align: center; font-weight: 500;">Failed to load activities. Please try again later.</p>';
       console.error("Error fetching activities:", error);
     }
   }
@@ -56,6 +63,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const email = document.getElementById("email").value;
     const activity = document.getElementById("activity").value;
+
+    if (!activity) {
+      showMessage("Please select an activity", "error");
+      return;
+    }
+
+    const submitButton = signupForm.querySelector("button");
+    const originalText = submitButton.textContent;
+    submitButton.textContent = "Signing up...";
+    submitButton.disabled = true;
 
     try {
       const response = await fetch(
@@ -68,27 +85,36 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await response.json();
 
       if (response.ok) {
-        messageDiv.textContent = result.message;
-        messageDiv.className = "success";
+        showMessage(result.message, "success");
         signupForm.reset();
+        
+        // Refresh activities list after successful signup
+        setTimeout(() => {
+          fetchActivities();
+        }, 1500);
       } else {
-        messageDiv.textContent = result.detail || "An error occurred";
-        messageDiv.className = "error";
+        showMessage(result.detail || "An error occurred", "error");
       }
-
-      messageDiv.classList.remove("hidden");
-
-      // Hide message after 5 seconds
-      setTimeout(() => {
-        messageDiv.classList.add("hidden");
-      }, 5000);
     } catch (error) {
-      messageDiv.textContent = "Failed to sign up. Please try again.";
-      messageDiv.className = "error";
-      messageDiv.classList.remove("hidden");
+      showMessage("Failed to sign up. Please try again.", "error");
       console.error("Error signing up:", error);
+    } finally {
+      submitButton.textContent = originalText;
+      submitButton.disabled = false;
     }
   });
+
+  // Helper function to display messages
+  function showMessage(text, type) {
+    messageDiv.textContent = text;
+    messageDiv.className = type;
+    messageDiv.classList.remove("hidden");
+
+    // Hide message after 5 seconds
+    setTimeout(() => {
+      messageDiv.classList.add("hidden");
+    }, 5000);
+  }
 
   // Initialize app
   fetchActivities();
